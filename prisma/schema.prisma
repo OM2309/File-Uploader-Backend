@@ -16,6 +16,7 @@ datasource db {
 model User {
   id        String   @id @unique @default(uuid())
   name      String
+  role      String   @default("user")
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
@@ -30,5 +31,3 @@ model Upload {
   userID String
   user   User   @relation(fields: [userID], references: [id])
 }
-
-

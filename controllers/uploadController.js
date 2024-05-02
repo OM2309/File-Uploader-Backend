@@ -35,7 +35,7 @@ export const uploadFiles = async (req, res) => {
       data: {
         id: uploadedFile.id,
         name: uploadedFile.name,
-        imageUrl: `/uploads/${req.user.id}/${req.file.filename}`,
+        imageUrl: `/uploads/${req.file.userID}/${req.file.filename}`,
       },
     });
   } catch (error) {
@@ -57,7 +57,7 @@ export const deleteFiles = async (req, res) => {
     }
 
     // Ensure that only the owner of the file can delete it
-    if (existingFile.userID !== req.user.id) {
+    if (existingFile.userID !== req.user.id && !(req.user.role == "admin")) {
       return res
         .status(403)
         .json({ message: "Unauthorized to delete this file" });
@@ -85,10 +85,15 @@ export const getAllFilesByUser = async (req, res) => {
     }
 
     const userId = req.user.id;
+    let userFiles = []
 
-    const userFiles = await prisma.upload.findMany({
-      where: { userID: userId },
-    });
+    if(req.user.role == "admin"){
+      userFiles = await prisma.upload.findMany()
+    }else{
+      userFiles = await prisma.upload.findMany({
+        where: { userID: userId },
+      });
+    }
 
     if (userFiles.length === 0) {
       return res.status(404).json({ message: "No files found for this user" });
@@ -96,7 +101,7 @@ export const getAllFilesByUser = async (req, res) => {
 
     const filesWithUrls = userFiles.map((file) => ({
       ...file,
-      imageUrl: `/uploads/${req.user.id}/${file.name}`,
+      imageUrl: `/uploads/${file.userID}/${file.name}`,
     }));
 
     res.status(200).json({
