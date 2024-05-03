@@ -80,9 +80,6 @@ routes.post("/login", async (req, res) => {
   }
 });
 
-routes.post("/logout", (req, res) => {
-  localStorage.removeItem("token");
-  res.json({ message: "Logout successful" });
-});
+
 
 export default routes;

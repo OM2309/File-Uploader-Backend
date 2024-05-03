@@ -3,7 +3,8 @@ import {
   uploadFiles,
   deleteFiles,
   getAllFilesByUser,
-  getOnlyOneFile
+  getOnlyOneFile,
+  getMe
 } from "../controllers/uploadController.js";
 import upload from "../utils/upload_files.js";
 import authenticateJWT from "../middleware/authenticateJWT.js";
@@ -14,5 +15,6 @@ routes.get("/one/:fileId", authenticateJWT, getOnlyOneFile);
 routes.get("/all", authenticateJWT, getAllFilesByUser);
 routes.post("/upload", authenticateJWT, upload.single("file"), uploadFiles);
 routes.delete("/delete/:fileId", authenticateJWT, deleteFiles);
+routes.get("/getme", authenticateJWT, getMe);
 
 export default routes;

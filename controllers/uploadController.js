@@ -88,7 +88,11 @@ export const getAllFilesByUser = async (req, res) => {
     let userFiles = []
 
     if(req.user.role == "admin"){
-      userFiles = await prisma.upload.findMany()
+      userFiles = await prisma.upload.findMany({
+        include: {
+          user: true,
+        }
+      })
     }else{
       userFiles = await prisma.upload.findMany({
         where: { userID: userId },
@@ -149,3 +153,7 @@ export const getOnlyOneFile = async (req, res) => {
     res.status(500).json({ message: "Error retrieving file" });
   }
 };
+
+export const getMe = async (req, res) => {
+  res.status(200).json(req.user);
+}
